@@ -91,6 +91,12 @@ footer .brand .logo{height:84px;margin:-14px 0 -14px -18px}
 .chip small{color:var(--muted)}
 .chip.c1{top:22px;left:22px}
 .chip.c2{top:38%;right:20px}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-visual.has-img .obj,.hero-visual.has-img .floor{display:none}
+.hero-visual.has-img .caption{background:#ffffffe0;backdrop-filter:blur(8px);border-radius:16px;padding:12px 12px 12px 16px;left:16px;right:16px;bottom:16px}
+.col-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s var(--ease)}
+.col:hover .col-img{transform:scale(1.05)}
+.col.has-img .meta{background:#ffffffe0;backdrop-filter:blur(8px);border-radius:14px;padding:10px 10px 10px 14px;left:12px;right:12px;bottom:12px}
 .hero-visual .caption{position:absolute;left:22px;right:22px;bottom:20px;display:flex;justify-content:space-between;align-items:end;gap:12px}
 .hero-visual .caption .name{font-weight:600;font-size:18px;letter-spacing:-.02em}
 .hero-visual .caption .name small{display:block;font-weight:500;font-size:13px;color:var(--muted);letter-spacing:0}
@@ -375,7 +381,7 @@ footer{padding:80px 0 34px}
     <div class="wrap">
       <div class="sec-head rv">
         <div><span class="eyebrow">Koleksiyonlar</span><h2>Ne arıyorsun?</h2></div>
-        <p>Dekordan masaüstüne, figürlerden hediyeliklere. Bir koleksiyon seç, ürünleri gör.</p>
+        <p>Masa oyunlarından figürlü bardak altlıklarına. Bir koleksiyon seç, ürünleri gör.</p>
       </div>
       <div class="cols" id="cols"></div>
     </div>
@@ -548,60 +554,35 @@ footer{padding:80px 0 34px}
    AYARLAR — Siteyi yayına almadan önce burayı doldur.
    ================================================================== */
 const SETTINGS = {
-  comingSoon: true,                                // Ürünler hazır olunca false yap
-  whatsapp:  "905XXXXXXXXX",                       // Başında 90, boşluksuz (ör. 905321234567)
+  comingSoon: false,                               // Ürünler hazır olunca false yap
+  whatsapp:  "905376685339",                       // Başında 90, boşluksuz (ör. 905321234567)
   email:     "info@babun3d.com",
   instagram: "https://instagram.com/babun3d",
-  shopierStore: "",                                // Shopier mağaza linkin (ör. https://www.shopier.com/babun3d)
+  shopierStore: "https://www.shopier.com/babun3d",                                // Shopier mağaza linkin (ör. https://www.shopier.com/babun3d)
 };
 
-/* ÜRÜNLER — Şu an ÖRNEK ürünler var. Kendi ürünlerinle değiştir.
+/* ÜRÜNLER — Shopier mağazasındaki ürünler (shopier.com/babun3d).
    - shopier:  ürünün Shopier linki (boşsa "Bilgi al" butonu çıkar)
    - trendyol: varsa Trendyol linki (boşsa buton görünmez)
    - images:   fotoğraflar, ör. ["img/vazo-1.jpg","img/vazo-2.jpg"] (boşsa çizim görünür)
    - shape:    fotoğraf yokken gösterilecek çizim (vase, pot, dragon, monkey, organizer, stand, lamp, key)
 */
 const PRODUCTS = [
-  {id:"dalga-vazo", name:"Dalga Vazo", cat:"Dekor", price:349, featured:1, isNew:1,
-   desc:"Spiral dokusuyla ışığı farklı açılardan yakalayan, kuru çiçekler için tasarlanmış dekoratif vazo.",
-   specs:{"Malzeme":"PLA, mat","Boyut":"12 × 12 × 22 cm","Üretim":"3–5 iş günü"},
-   colors:[["Kemik","#e9e2d3"],["Terracotta","#c8643c"],["Antrasit","#3b3b3b"],["Adaçayı","#9fae95"]],
-   shape:"vase", shopier:"", trendyol:"", images:[]},
-  {id:"lowpoly-saksi", name:"Low-Poly Saksı", cat:"Dekor", price:249, featured:2,
-   desc:"Geometrik yüzeyli, drenaj delikli ve altlıklı saksı. Sukulent ve kaktüsler için ideal boyutta.",
-   specs:{"Malzeme":"PETG, suya dayanıklı","Boyut":"10 × 10 × 9 cm","Üretim":"3–5 iş günü"},
-   colors:[["Beyaz","#f1efea"],["Adaçayı","#9fae95"],["Siyah","#222"]],
-   shape:"pot", shopier:"", trendyol:"", images:[]},
-  {id:"esnek-ejderha", name:"Esnek Ejderha", cat:"Figür", price:399, featured:3, badge:"Çok sevilen",
-   desc:"Eklemleri tek parça basılan, elde kıvrılabilen ejderha figürü. Masa üstünde de, hediye olarak da dikkat çeker.",
-   specs:{"Malzeme":"PLA, ipek parlak","Boyut":"Uzunluk 30 cm","Üretim":"3–5 iş günü"},
-   colors:[["Turuncu","#ff5a1f"],["Altın","#c9a24a"],["Gece mavisi","#2b3a67"]],
-   shape:"dragon", shopier:"", trendyol:"", images:[]},
-  {id:"babun-maskot", name:"Babun Maskot", cat:"Figür", price:229, isNew:1,
-   desc:"Stüdyomuzun maskotu. Masanın köşesinde sana eşlik edecek küçük bir dost.",
-   specs:{"Malzeme":"PLA","Boyut":"8 × 7 × 9 cm","Üretim":"3–5 iş günü"},
-   colors:[["Kum","#d9b98a"],["Turuncu","#ff5a1f"],["Kemik","#e9e2d3"]],
-   shape:"monkey", shopier:"", trendyol:"", images:[]},
-  {id:"masa-organizer", name:"Modüler Organizer", cat:"Masaüstü", price:289, featured:4,
-   desc:"Kalem, not kağıdı ve küçük eşyalar için bölmeli, birbirine eklenebilen masaüstü düzenleyici.",
-   specs:{"Malzeme":"PLA, mat","Boyut":"18 × 9 × 10 cm","Üretim":"3–5 iş günü"},
-   colors:[["Antrasit","#3b3b3b"],["Kemik","#e9e2d3"],["Adaçayı","#9fae95"]],
-   shape:"organizer", shopier:"", trendyol:"", images:[]},
-  {id:"telefon-standi", name:"Telefon Standı", cat:"Masaüstü", price:169,
-   desc:"Görüntülü görüşme ve video için ideal açıda, şarj kablosu geçişli sade telefon standı.",
-   specs:{"Malzeme":"PETG","Uyumluluk":"Tüm telefonlar","Üretim":"2–4 iş günü"},
-   colors:[["Siyah","#222"],["Beyaz","#f1efea"],["Turuncu","#ff5a1f"]],
-   shape:"stand", shopier:"", trendyol:"", images:[]},
-  {id:"dalga-lamba", name:"Ay Gece Lambası", cat:"Dekor", price:449, isNew:1, badge:"Yeni",
-   desc:"Yüzey dokusu ay kraterlerinden ilham alan, sıcak ışıklı LED gece lambası. USB ile çalışır.",
-   specs:{"Malzeme":"PLA, ışık geçirgen","Boyut":"Ø 12 cm","Işık":"Sıcak beyaz LED, USB"},
-   colors:[["Doğal","#f3eadb"]],
-   shape:"lamp", shopier:"", trendyol:"", images:[]},
-  {id:"isimli-anahtarlik", name:"İsimli Anahtarlık", cat:"Hediyelik", price:99,
-   desc:"İstediğin isim veya kısa yazıyla üretilen, iki renkli anahtarlık. Sipariş notuna yazını ekle.",
-   specs:{"Malzeme":"PLA, çift renk","Boyut":"6 × 2.5 cm","Üretim":"2–4 iş günü"},
-   colors:[["Siyah / Turuncu","#222"],["Beyaz / Siyah","#f1efea"],["Turuncu / Beyaz","#ff5a1f"]],
-   shape:"key", shopier:"", trendyol:"", images:[]},
+  {"id": "koridor-masa-oyunu", "name": "Koridor Masa Oyunu", "cat": "Masa Oyunları", "price": 800, "featured": 1, "isNew": 1, "badge": "Yeni", "desc": "Klasik koridor strateji oyunu. Amacın piyonunu karşı tarafa ilk sen ulaştırmak, rakibinin yolunu ise duvarlarla kapatmak! Kolay öğrenilir, her yaştan oyuncu için keyifli; aile oyun geceleri ve hediye için ideal.", "specs": {"Tahta ölçüsü": "23,2 × 23,2 cm", "Oyuncu": "2 kişi", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [["Yeşil", "#5b9a5a"], ["Turuncu", "#ff5a1f"], ["Mor", "#7a4fa3"]], "shape": "organizer", "shopier": "https://www.shopier.com/babun3d/52968814", "images": ["https://cdn.shopier.app/pictures_large/babun3d_27a200e22465b23cb10e7df3f5380a88.webp", "https://cdn.shopier.app/pictures_large/babun3d_1aade15acf2239f9e389136989cbea79.webp", "https://cdn.shopier.app/pictures_large/babun3d_09c2e9bf559a3d126f7b84b4f8e3f4b2.webp", "https://cdn.shopier.app/pictures_large/babun3d_7216d3db42948e489a950409fa086a5c.webp", "https://cdn.shopier.app/pictures_large/babun3d_22c323f6d28de64ad3e66ff6aa237ec7.webp"]},
+  {"id": "katamino-zeka-oyunu", "name": "Katamino Zeka Oyunu", "cat": "Masa Oyunları", "price": 750, "featured": 2, "isNew": 1, "badge": "Yeni", "desc": "Çocukların da yetişkinlerin de sevdiği klasik pentomino bulmacası. Renkli parçaları tahtaya boşluk kalmayacak şekilde yerleştir; seviye ilerledikçe bulmaca zorlaşır. Uzamsal zekâ, problem çözme ve odaklanmayı geliştirir.", "specs": {"Oyuncu": "1–2 kişi", "Bulmaca": "Kolaydan zora yüzlerce", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "organizer", "shopier": "https://www.shopier.com/babun3d/52968929", "images": ["https://cdn.shopier.app/pictures_large/babun3d_341a7a6f080afc2255351246c0bd24ff.webp", "https://cdn.shopier.app/pictures_large/babun3d_96f777eb2fd7d127e8e9d6c6d2418c5d.webp", "https://cdn.shopier.app/pictures_large/babun3d_f58ce4be596aea0386408a73d696cdf6.webp"]},
+  {"id": "inek-bardak-altligi", "name": "İnek Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 3, "isNew": 1, "desc": "Sevimli inek figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969139", "images": ["https://cdn.shopier.app/pictures_large/babun3d_668dcfa6f189ccd1fd4e7fab02cd43aa.webp", "https://cdn.shopier.app/pictures_large/babun3d_fdce4172d5b32bfb0675bb799e0f637b.webp", "https://cdn.shopier.app/pictures_large/babun3d_b760e38e597c958fc9e81d16de34fca6.webp"]},
+  {"id": "maymun-bardak-altligi", "name": "Maymun Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 4, "isNew": 1, "desc": "Sevimli maymun figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969176", "images": ["https://cdn.shopier.app/pictures_large/babun3d_a8a2444b895ff7f9169058550e2c9f24.webp", "https://cdn.shopier.app/pictures_large/babun3d_a451fca11f373ea8a47537a051962c16.webp", "https://cdn.shopier.app/pictures_large/babun3d_d42480f9ffe91bf7d382116ae878da50.webp"]},
+  {"id": "tilki-bardak-altligi", "name": "Tilki Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 5, "isNew": 1, "desc": "Sevimli tilki figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969203", "images": ["https://cdn.shopier.app/pictures_large/babun3d_dea4e100bb7a8e050b802a295f984a5b.webp", "https://cdn.shopier.app/pictures_large/babun3d_d58532c43978f2bbb87a408d70129b94.webp", "https://cdn.shopier.app/pictures_large/babun3d_f74e0c3227a3fc9219b1e068b453cc93.webp"]},
+  {"id": "ejderha-bardak-altligi", "name": "Ejderha Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 6, "isNew": 1, "desc": "Sevimli ejderha figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969241", "images": ["https://cdn.shopier.app/pictures_large/babun3d_cae35d1ef6c57beb29a3b19b2cff9f67.webp", "https://cdn.shopier.app/pictures_large/babun3d_f37b3b7c01520b197900eb3d0bb178e6.webp", "https://cdn.shopier.app/pictures_large/babun3d_99e2a225a76a825bddfe58f25ec5952b.webp"]},
+  {"id": "koyun-bardak-altligi", "name": "Koyun Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 7, "isNew": 1, "desc": "Sevimli koyun figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969264", "images": ["https://cdn.shopier.app/pictures_large/babun3d_b975acdc7b5ab58f6543109e22887460.webp", "https://cdn.shopier.app/pictures_large/babun3d_9775660c99374d65ba4657444fd5a612.webp", "https://cdn.shopier.app/pictures_large/babun3d_f129c2431ef2d5efd24b2184bed36538.webp"]},
+  {"id": "domuz-bardak-altligi", "name": "Domuz Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 8, "isNew": 1, "desc": "Sevimli domuz figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969294", "images": ["https://cdn.shopier.app/pictures_large/babun3d_587f6fac53839c445c90d5a57db9ef26.webp", "https://cdn.shopier.app/pictures_large/babun3d_84cdf682a6f6b84c80627b6b37082fa1.webp", "https://cdn.shopier.app/pictures_large/babun3d_dfcc5331e0c935848ecab3f280a5bbb8.webp"]},
+  {"id": "tavuk-bardak-altligi", "name": "Tavuk Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 9, "isNew": 1, "desc": "Sevimli tavuk figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969315", "images": ["https://cdn.shopier.app/pictures_large/babun3d_e9c88f36cdd6623feadfa5cb585b68d2.webp", "https://cdn.shopier.app/pictures_large/babun3d_e1632265cd70872a86e0dd7a84f6127e.webp", "https://cdn.shopier.app/pictures_large/babun3d_b003eb93ab6f4b0f115ad6448e0ae4c9.webp"]},
+  {"id": "keci-bardak-altligi", "name": "Keçi Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 10, "isNew": 1, "desc": "Sevimli keçi figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969325", "images": ["https://cdn.shopier.app/pictures_large/babun3d_0e3756fe4d7a777eec7afb2af0c8049d.webp", "https://cdn.shopier.app/pictures_large/babun3d_9defbc19fa2c55ce90d0fc6176bf4544.webp", "https://cdn.shopier.app/pictures_large/babun3d_53ea04ce75ce2c19357a49e2541dd336.webp"]},
+  {"id": "at-bardak-altligi", "name": "At Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 11, "isNew": 1, "desc": "Sevimli at figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969344", "images": ["https://cdn.shopier.app/pictures_large/babun3d_f68629dbada8b0226cf8ea93b919f2d3.webp", "https://cdn.shopier.app/pictures_large/babun3d_e7c57a847b10431f24e0b2b79f99c233.webp", "https://cdn.shopier.app/pictures_large/babun3d_aca038bfc8d2a52f5b6277071c4cda7b.webp"]},
+  {"id": "esek-bardak-altligi", "name": "Eşek Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 12, "isNew": 1, "desc": "Sevimli eşek figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969360", "images": ["https://cdn.shopier.app/pictures_large/babun3d_dafce31c89a0c2c867e43e3b33c70721.webp", "https://cdn.shopier.app/pictures_large/babun3d_2a5211f5b56b0f401d43d83e426448d6.webp", "https://cdn.shopier.app/pictures_large/babun3d_e2de974177fddf9b631798aba3bea331.webp"]},
+  {"id": "ordek-bardak-altligi", "name": "Ördek Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 13, "isNew": 1, "desc": "Sevimli ördek figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969393", "images": ["https://cdn.shopier.app/pictures_large/babun3d_14684df501a186cf5449bbb3ab83bdd8.webp", "https://cdn.shopier.app/pictures_large/babun3d_e85faf306debb81b518e9189f1eff554.webp", "https://cdn.shopier.app/pictures_large/babun3d_d34a3f886bc92b0e8d07015f7922b47f.webp"]},
+  {"id": "tavsan-bardak-altligi", "name": "Tavşan Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 14, "isNew": 1, "desc": "Sevimli tavşan figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969409", "images": ["https://cdn.shopier.app/pictures_large/babun3d_fcd32bce65d510204b64885d70e39244.webp", "https://cdn.shopier.app/pictures_large/babun3d_5040ebd3b4826ec84de8f88f1d2130d6.webp", "https://cdn.shopier.app/pictures_large/babun3d_2034bf4fae83d0c7fd9749544479ae36.webp"]},
+  {"id": "kaz-bardak-altligi", "name": "Kaz Figürlü Bardak Altlığı", "cat": "Bardak Altlıkları", "price": 350, "featured": 15, "isNew": 1, "desc": "Sevimli kaz figürlü bardak altlığı. Masanı bardak izlerinden ve sıcaklıktan korurken mutfağına neşeli bir dokunuş katar. Serideki 13 hayvanla koleksiyonunu tamamlayabilirsin.", "specs": {"Ölçü": "Yaklaşık 13 × 15 cm", "Seri": "13 farklı hayvan", "Üretim": "Sipariş üzerine", "Kargo": "50 ₺"}, "colors": [], "shape": "key", "shopier": "https://www.shopier.com/babun3d/52969436", "images": ["https://cdn.shopier.app/pictures_large/babun3d_0d885c6a4092cc09ba319f68bbe782b8.webp", "https://cdn.shopier.app/pictures_large/babun3d_a5a42f466c65da4ca18442490099a375.webp", "https://cdn.shopier.app/pictures_large/babun3d_587dc046944cfc972ab0860d4ba1c775.webp"]},
 ];
 /* ================================================================== */
 
@@ -610,6 +591,8 @@ const CAT_INFO = {
   "Figür":{shape:"dragon",color:"#ff5a1f",bg:"#ece4da"},
   "Masaüstü":{shape:"organizer",color:"#3b3b3b",bg:"#e3e1dc"},
   "Hediyelik":{shape:"key",color:"#222",bg:"#e9e3d8"},
+  "Masa Oyunları":{shape:"organizer",color:"#3b3b3b",bg:"#e3e1dc"},
+  "Bardak Altlıkları":{shape:"key",color:"#c8643c",bg:"#e7dfd3"},
 };
 
 /* --- product illustrations (shown until real photos are added) --- */
@@ -638,18 +621,20 @@ const tl=n=>n.toLocaleString("tr-TR")+" ₺";
 const wa=t=>`https://wa.me/${SETTINGS.whatsapp}?text=${encodeURIComponent(t)}`;
 const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2600);}
-function media(p,cls=""){return p.images&&p.images.length?`<img src="${esc(p.images[0])}" alt="${esc(p.name)}" loading="lazy">`:`<div class="art ${cls}">${art(p.shape,p.colors[0][1])}</div>`;}
+function media(p,cls=""){return p.images&&p.images.length?`<img src="${esc(p.images[0])}" alt="${esc(p.name)}" loading="lazy">`:`<div class="art ${cls}">${art(p.shape,(p.colors[0]||["","#c8643c"])[1])}</div>`;}
 
 /* hero */
 const hero = PRODUCTS.find(p=>p.featured===1)||PRODUCTS[0];
-$("#heroObj").innerHTML = art(hero.shape, hero.colors[1]?hero.colors[1][1]:hero.colors[0][1]);
+if(hero.images&&hero.images.length){$("#heroVisual").insertAdjacentHTML("afterbegin",`<img class="hero-img" src="${esc(hero.images[0])}" alt="${esc(hero.name)}">`);$("#heroVisual").classList.add("has-img");}
+else $("#heroObj").innerHTML = art(hero.shape, (hero.colors[1]||hero.colors[0]||["","#c8643c"])[1]);
 $("#heroName").innerHTML = `${esc(hero.name)}<small>${esc(hero.cat)} · ${tl(hero.price)}</small>`;
 $("#heroBtn").onclick=()=>openProduct(hero.id);
 
 /* collections */
 const cats=[...new Set(PRODUCTS.map(p=>p.cat))];
 $("#cols").innerHTML = cats.map(c=>{const i=CAT_INFO[c]||{shape:"vase",color:"#999",bg:"#e9e6df"};const n=PRODUCTS.filter(p=>p.cat===c).length;
-  return `<button class="col rv" data-cat="${esc(c)}" style="background:${i.bg}"><div class="art">${art(i.shape,i.color)}</div><div class="meta"><span><b>${esc(c)}</b><small>${n} ürün</small></span><span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div></button>`}).join("");
+  const ph=PRODUCTS.find(p=>p.cat===c&&p.images&&p.images.length);
+  return `<button class="col rv${ph?" has-img":""}" data-cat="${esc(c)}" style="background:${i.bg}">${ph?`<img class="col-img" src="${esc(ph.images[0])}" alt="" loading="lazy">`:`<div class="art">${art(i.shape,i.color)}</div>`}<div class="meta"><span><b>${esc(c)}</b><small>${n} ürün</small></span><span class="arrow"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span></div></button>`}).join("");
 $("#cols").addEventListener("click",e=>{const b=e.target.closest(".col");if(!b)return;setCat(b.dataset.cat);$("#urunler").scrollIntoView({behavior:"smooth"});});
 $("#footCats").innerHTML = cats.map(c=>`<li><button data-fcat="${esc(c)}">${esc(c)}</button></li>`).join("");
 $("#footCats").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;setCat(b.dataset.fcat);$("#urunler").scrollIntoView({behavior:"smooth"});});
@@ -692,15 +677,15 @@ function openProduct(id){
   let imgI=0;
   $("#pThumbs").innerHTML=(p.images||[]).length>1?p.images.map((s,i)=>`<button aria-current="${i===0}" data-i="${i}"><img src="${esc(s)}" alt=""></button>`).join(""):"";
   $("#pThumbs").onclick=e=>{const b=e.target.closest("button");if(!b)return;imgI=+b.dataset.i;$$("#pThumbs button").forEach(x=>x.setAttribute("aria-current",x===b));drawMain();};
-  const drawColors=()=>{$("#pColorName").textContent=p.colors[ci][0];$("#pColors").innerHTML=p.colors.map((c,i)=>`<button aria-pressed="${i===ci}" data-i="${i}" style="background:${c[1]}" aria-label="${esc(c[0])}" title="${esc(c[0])}"></button>`).join("");drawBuy();};
+  const drawColors=()=>{$("#pColorsWrap").hidden=!p.colors.length;if(!p.colors.length){drawBuy();return;}$("#pColorName").textContent=p.colors[ci][0];$("#pColors").innerHTML=p.colors.map((c,i)=>`<button aria-pressed="${i===ci}" data-i="${i}" style="background:${c[1]}" aria-label="${esc(c[0])}" title="${esc(c[0])}"></button>`).join("");drawBuy();};
   $("#pColors").onclick=e=>{const b=e.target.closest("button");if(!b)return;ci=+b.dataset.i;drawColors();drawMain();};
   const drawBuy=()=>{
-    const color=p.colors[ci][0]; let h="";
+    const color=(p.colors[ci]||[""])[0]; let h="";
     if(p.shopier) h+=`<a class="btn btn-accent" href="${esc(p.shopier)}" target="_blank" rel="noopener">Shopier ile satın al</a>`;
-    else h+=`<a class="btn btn-accent" href="${wa(`Merhaba Babun3D! "${p.name}" (${color}) ürününü sipariş etmek istiyorum.`)}" target="_blank" rel="noopener">Sipariş için yaz</a>`;
+    else h+=`<a class="btn btn-accent" href="${wa(`Merhaba Babun3D! "${p.name}" ${color?`(${color}) `:""}ürününü sipariş etmek istiyorum.`)}" target="_blank" rel="noopener">Sipariş için yaz</a>`;
     if(p.trendyol) h+=`<a class="btn btn-line" href="${esc(p.trendyol)}" target="_blank" rel="noopener">Trendyol'da gör</a>`;
     h+=`<a class="btn btn-line" href="${wa(`Merhaba Babun3D! "${p.name}" hakkında bir sorum var.`)}" target="_blank" rel="noopener">Soru sor</a>`;
-    if(p.shopier) h+=`<p class="small"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>Seçtiğin rengi (${esc(color)}) Shopier'de sipariş notuna yazmayı unutma.</p>`;
+    if(p.shopier) h+=`<p class="small"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>${color?`Shopier'de renk seçeneğinden ${esc(color)} rengini seçmeyi unutma.`:"Ödeme Shopier'in güvenli sayfasında tamamlanır."}</p>`;
     $("#pBuy").innerHTML=h;
   };
   drawColors(); drawMain();
